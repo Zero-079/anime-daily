@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { getTodayDateString, getDailyIndex, getDayOfYear } from "../utils/dateUtils";
-import { getCache, setCache, getCacheKey } from "../utils/cache";
+import { getCache, setCache, getCacheKey, getYesterdayAnime, setYesterdayAnime } from "../utils/cache";
 
 export interface Anime {
   mal_id: number;
@@ -105,7 +105,19 @@ export function useDailyAnime() {
       if (cached && cached.length > 0) {
         console.log("Using cached data, anime count:", cached.length);
         const index = getDailyIndex() % cached.length;
-        setAnime(cached[index]);
+        const todayAnime = cached[index];
+        
+        const yesterday = getYesterdayAnime();
+        
+        if (yesterday && todayAnime.mal_id === yesterday.mal_id) {
+          const nextIndex = (index + 1) % cached.length;
+          console.log("Same anime as yesterday, using next:", nextIndex);
+          setAnime(cached[nextIndex]);
+          setYesterdayAnime(cached[nextIndex]);
+        } else {
+          setAnime(todayAnime);
+          setYesterdayAnime(todayAnime);
+        }
         setLoading(false);
         return;
       }
@@ -136,7 +148,18 @@ export function useDailyAnime() {
       const index = getDailyIndex() % allAnime.length;
       console.log("Daily index:", index, "from date:", getTodayDateString());
       
-      setAnime(allAnime[index]);
+      const todayAnime = allAnime[index];
+      const yesterday = getYesterdayAnime();
+      
+      if (yesterday && todayAnime.mal_id === yesterday.mal_id) {
+        const nextIndex = (index + 1) % allAnime.length;
+        console.log("Same anime as yesterday, using next:", nextIndex);
+        setAnime(allAnime[nextIndex]);
+        setYesterdayAnime(allAnime[nextIndex]);
+      } else {
+        setAnime(todayAnime);
+        setYesterdayAnime(todayAnime);
+      }
       
     } catch (err) {
       console.error("Fetch error:", err);
