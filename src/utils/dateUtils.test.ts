@@ -35,17 +35,7 @@ describe('dateUtils', () => {
       expect(dayOfYear).toBeLessThanOrEqual(366);
     });
 
-    it('returns 1 for January 1st', () => {
-      const date = new Date('2024-01-01T12:00:00');
-      const originalDate = Date;
-      const mockDate = new Date(date);
-      
-      const now = new Date();
-      const start = new Date(now.getFullYear(), 0, 0);
-      const diff = mockDate.getTime() - start.getTime();
-      const oneDay = 1000 * 60 * 60 * 24;
-      const expected = Math.floor(diff / oneDay);
-      
+    it('returns a value between 1 and 366', () => {
       expect(getDayOfYear()).toBeGreaterThanOrEqual(1);
       expect(getDayOfYear()).toBeLessThanOrEqual(366);
     });
