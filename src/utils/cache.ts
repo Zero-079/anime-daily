@@ -1,6 +1,8 @@
 import { getTodayDateString } from './dateUtils';
+import type { Anime } from '../hooks/useDailyAnime';
 
 const CACHE_PREFIX = "anime_cache_";
+const YESTERDAY_ANIME_KEY = "yesterday_anime";
 
 /**
  * Get cache key for today's date (local timezone)
@@ -46,5 +48,25 @@ export function setCache<T>(key: string, data: T): void {
   } catch (e) {
     console.error("Cache error:", e);
     // Ignore quota errors
+  }
+}
+
+export function getYesterdayAnime(): Anime | null {
+  try {
+    const stored = localStorage.getItem(YESTERDAY_ANIME_KEY);
+    if (stored) {
+      return JSON.parse(stored) as Anime;
+    }
+  } catch {
+    // Ignore errors
+  }
+  return null;
+}
+
+export function setYesterdayAnime(anime: Anime): void {
+  try {
+    localStorage.setItem(YESTERDAY_ANIME_KEY, JSON.stringify(anime));
+  } catch (e) {
+    console.error("Error saving yesterday anime:", e);
   }
 }
