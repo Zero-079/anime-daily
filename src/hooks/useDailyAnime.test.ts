@@ -48,12 +48,16 @@ describe('useDailyAnime', () => {
   let fetchSpy: ReturnType<typeof vi.spyOn>;
   let getCacheSpy: ReturnType<typeof vi.spyOn>;
   let setCacheSpy: ReturnType<typeof vi.spyOn>;
+  let getYesterdayAnimeSpy: ReturnType<typeof vi.spyOn>;
+  let setYesterdayAnimeSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     vi.restoreAllMocks();
     fetchSpy = vi.spyOn(globalThis, 'fetch').mockReset();
     getCacheSpy = vi.spyOn(cacheModule, 'getCache').mockReset();
     setCacheSpy = vi.spyOn(cacheModule, 'setCache').mockReset();
+    getYesterdayAnimeSpy = vi.spyOn(cacheModule, 'getYesterdayAnime').mockReset().mockReturnValue(null);
+    setYesterdayAnimeSpy = vi.spyOn(cacheModule, 'setYesterdayAnime').mockReset();
     vi.spyOn(dateModule, 'getDailyIndex').mockReset().mockReturnValue(0);
     vi.spyOn(cacheModule, 'getCacheKey').mockReset().mockReturnValue('anime_cache_2024-01-01');
   });
