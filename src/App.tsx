@@ -8,19 +8,35 @@ function App() {
 
   return (
     <div className="app">
+      <div className="noise-overlay"></div>
+      
+      <div className="light-rays">
+        <div className="light-ray"></div>
+        <div className="light-ray"></div>
+        <div className="light-ray"></div>
+        <div className="light-ray"></div>
+        <div className="light-ray"></div>
+      </div>
+
       <div className="particles">
-        {[...Array(50)].map((_, i) => (
-          <div key={i} className="particle" style={{
-            left: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 5}s`,
-            animationDuration: `${5 + Math.random() * 10}s`
-          }}></div>
+        {[...Array(30)].map((_, i) => (
+          <div 
+            key={i} 
+            className={`particle ${i % 4 === 0 ? 'cyan' : ''}`} 
+            style={{
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 8}s`,
+              animationDuration: `${15 + Math.random() * 15}s`
+            }}
+          />
         ))}
       </div>
 
       <header className="header">
         <h1 className="logo">Anime Daily</h1>
-        <p className="day-counter">Day {dayOfYear} of the year — Recommendation #{dayOfYear}</p>
+        <p className="day-counter">
+          Day <span>{dayOfYear}</span> of the year — Recommendation #<span>{dayOfYear}</span>
+        </p>
       </header>
 
       <main className="main">
@@ -30,7 +46,7 @@ function App() {
         
         {error && (
           <div className="error-container">
-            <div className="error-icon">⚠️</div>
+            <div className="error-icon">⚠</div>
             <h2>Something went wrong</h2>
             <p>{error}</p>
             <button onClick={retry} className="retry-btn">
