@@ -15,41 +15,43 @@ export default function AnimeCard({ anime }: AnimeCardProps) {
   const studio = anime.studios?.[0]?.name || "Unknown";
   const year = anime.year || "Unknown";
   const synopsis = anime.synopsis || "No synopsis available.";
-  const shouldTruncate = synopsis.length > 300;
+  const shouldTruncate = synopsis.length > 280;
   const displaySynopsis = shouldTruncate && !showFullSynopsis 
-    ? synopsis.slice(0, 300) + "..." 
+    ? synopsis.slice(0, 280) + "..." 
     : synopsis;
   
   const allGenres = [...anime.genres, ...anime.themes].map(g => g.name);
 
   return (
-    <div className="anime-card">
+    <article className="anime-card">
       <div className="anime-image-container">
-        <img 
-          src={anime.images.jpg.large_image_url || anime.images.jpg.image_url} 
-          alt={displayTitle}
-          className="anime-image"
-        />
+        <div className="anime-image-wrapper">
+          <img 
+            src={anime.images.jpg.large_image_url || anime.images.jpg.image_url} 
+            alt={displayTitle}
+            className="anime-image"
+          />
+        </div>
         <div className="anime-glow"></div>
       </div>
       
       <div className="anime-content">
-        <div className="anime-header">
+        <header className="anime-header">
           <div className="anime-titles">
-            <h1 className="anime-title">{displayTitle}</h1>
+            <h2 className="anime-title">{displayTitle}</h2>
             {japaneseTitle && (
               <p className="anime-title-jp">{japaneseTitle}</p>
             )}
           </div>
           
           <div className="anime-score-container">
-            <span className="score-label">SCORE</span>
+            <span className="score-label">Score</span>
             <span className="anime-score">{score}</span>
             {anime.rank && (
               <span className="anime-rank">#{anime.rank}</span>
             )}
           </div>
-        </div>
+        </header>
         
         <div className="anime-meta">
           <div className="meta-item">
@@ -117,6 +119,6 @@ export default function AnimeCard({ anime }: AnimeCardProps) {
           </a>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
