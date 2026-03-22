@@ -1,10 +1,12 @@
+import { getTodayDateString } from './dateUtils';
+
 const CACHE_PREFIX = "anime_cache_";
 
 /**
- * Get cache key for today's date
+ * Get cache key for today's date (local timezone)
  */
 export function getCacheKey(): string {
-  const today = new Date().toISOString().split("T")[0];
+  const today = getTodayDateString();
   return `${CACHE_PREFIX}${today}`;
 }
 
