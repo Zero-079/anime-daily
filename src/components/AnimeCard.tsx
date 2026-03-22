@@ -91,17 +91,31 @@ export default function AnimeCard({ anime }: AnimeCardProps) {
           )}
         </div>
         
-        <a 
-          href={anime.url} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="mal-link"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-          </svg>
-          View on MyAnimeList
-        </a>
+        <div className="links-container">
+          <a 
+            href={anime.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="mal-link"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
+            View on MyAnimeList
+          </a>
+          
+          <a 
+            href={`https://www.crunchyroll.com/search?q=${encodeURIComponent(displayTitle)}`}
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="mal-link crunchyroll-link"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19.79 7.13A5.13 5.13 0 0 1 21 10.67c0 .27-.02.53-.06.79H21V6.13A5.13 5.13 0 0 0 19.79 7.13zM12 3.21a8.79 8.79 0 1 0 0 17.58 8.79 8.79 0 0 0 0-17.58zM8.79 9.71A4.29 4.29 0 1 1 13.08 14a4.29 4.29 0 0 1-4.29-4.29zM3 21h18v-2H3v2z"/>
+            </svg>
+            Watch on Crunchyroll
+          </a>
+        </div>
       </div>
     </div>
   );

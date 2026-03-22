@@ -421,12 +421,23 @@ img {
   box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
 }
 
+.links-container {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.links-container .mal-link,
+.links-container .crunchyroll-link {
+  flex: 1;
+  min-width: 200px;
+}
+
 .mal-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  width: 100%;
   padding: 16px 32px;
   background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-secondary) 100%);
   border-radius: var(--radius-md);
@@ -447,6 +458,15 @@ img {
 
 .mal-link svg {
   flex-shrink: 0;
+}
+
+.crunchyroll-link {
+  background: linear-gradient(135deg, #f47521 0%, #e85d04 100%);
+  box-shadow: 0 4px 20px rgba(244, 117, 33, 0.3);
+}
+
+.crunchyroll-link:hover {
+  box-shadow: 0 8px 30px rgba(244, 117, 33, 0.4);
 }
 
 .genre-badge {
@@ -760,5 +780,14 @@ img {
     font-size: 1.25rem;
     min-width: 48px;
     padding: 8px 10px;
+  }
+
+  .links-container {
+    flex-direction: column;
+  }
+
+  .links-container .mal-link,
+  .links-container .crunchyroll-link {
+    min-width: 100%;
   }
 }
