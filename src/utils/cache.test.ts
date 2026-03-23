@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { getCache, setCache, getCacheKey } from './cache';
+import { getTodayDateString } from './dateUtils';
 
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
@@ -26,7 +27,7 @@ describe('cache', () => {
 
     it('returns a key containing today date', () => {
       const key = getCacheKey();
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayDateString();
       expect(key).toContain(today);
     });
   });
@@ -78,42 +79,52 @@ describe('cache', () => {
     it('returns null when cache is older than 24 hours', () => {
       const key = 'expired_cache';
       const oldTimestamp = Date.now() - (25 * 60 * 60 * 1000);
+      const today = getTodayDateString();
       
       localStorage.setItem(key, JSON.stringify({
         data: { name: 'Test' },
-        timestamp: oldTimestamp
+        timestamp: oldTimestamp,
+        date: today
       }));
       
       const result = getCache<{ name: string }>(key);
       expect(result).toBeNull();
     });
 
-    it('returns data when cache is within 24 hours', () => {
+    it('returns data when cache is within 24 hours and from today', () => {
       const key = 'valid_cache';
       const recentTimestamp = Date.now() - (12 * 60 * 60 * 1000);
       const data = { name: 'Fresh Data' };
+      const today = getTodayDateString();
       
       localStorage.setItem(key, JSON.stringify({
         data,
-        timestamp: recentTimestamp
+        timestamp: recentTimestamp,
+        date: today
       }));
       
       const result = getCache<typeof data>(key);
       expect(result).toEqual(data);
     });
 
-    it('returns data at exactly 23 hours 59 minutes', () => {
-      const key = 'almost_expired';
-      const almostExpiry = Date.now() - (23 * 60 * 60 * 1000 + 59 * 60 * 1000);
-      const data = { name: 'Almost Expiry' };
+    it('returns null when cache is from different day', () => {
+      const key = 'different_day_cache';
+      const recentTimestamp = Date.now();
+      const data = { name: 'Yesterday Data' };
+      
+      // Set a different date (yesterday)
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
       
       localStorage.setItem(key, JSON.stringify({
         data,
-        timestamp: almostExpiry
+        timestamp: recentTimestamp,
+        date: yesterdayStr
       }));
       
       const result = getCache<typeof data>(key);
-      expect(result).toEqual(data);
+      expect(result).toBeNull();
     });
   });
 
