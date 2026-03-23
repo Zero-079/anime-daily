@@ -9,7 +9,7 @@ const GenreBadge: React.FC<GenreBadgeProps> = ({ name, index = 0 }) => {
   return (
     <span
       className="genre-badge"
-      style={{ animationDelay: `${0.3 + index * 0.08}s` }}
+      style={{ animationDelay: `${0.5 + index * 0.06}s` }}
     >
       {name}
     </span>
