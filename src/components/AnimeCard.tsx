@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Anime } from "../hooks/useDailyAnime";
 import GenreBadge from "./GenreBadge";
 
@@ -8,6 +8,7 @@ interface AnimeCardProps {
 
 export default function AnimeCard({ anime }: AnimeCardProps) {
   const [showFullSynopsis, setShowFullSynopsis] = useState(false);
+  const [highResLoaded, setHighResLoaded] = useState(false);
   
   const displayTitle = anime.title_english || anime.title;
   const japaneseTitle = anime.title_japanese;
@@ -22,17 +23,28 @@ export default function AnimeCard({ anime }: AnimeCardProps) {
   
   const allGenres = [...anime.genres, ...anime.themes].map(g => g.name);
 
+  const lowResSrc = anime.images.jpg.image_url;
+  const highResSrc = anime.images.jpg.large_image_url || anime.images.jpg.image_url;
+
   return (
     <article className="anime-card">
       <div className="anime-image-container">
-        <div className="anime-image-wrapper">
+        <div className={`anime-image-wrapper ${highResLoaded ? 'loaded' : ''}`}>
+          {/* Always show low-res first for immediate display */}
           <img 
-            src={anime.images.jpg.large_image_url || anime.images.jpg.image_url} 
+            src={lowResSrc} 
             alt={displayTitle}
-            className="anime-image"
+            className="anime-image low-res"
           />
+          {/* High-res loads on top */}
+          <img 
+            src={highResSrc} 
+            alt={displayTitle}
+            className={`anime-image high-res ${highResLoaded ? 'loaded' : ''}`}
+            onLoad={() => setHighResLoaded(true)}
+          />
+          <div className="anime-glow"></div>
         </div>
-        <div className="anime-glow"></div>
       </div>
       
       <div className="anime-content">
