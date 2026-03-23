@@ -60,6 +60,10 @@ describe('useDailyAnime', () => {
     setYesterdayAnimeSpy = vi.spyOn(cacheModule, 'setYesterdayAnime').mockReset();
     vi.spyOn(dateModule, 'getDailyIndex').mockReset().mockReturnValue(0);
     vi.spyOn(cacheModule, 'getCacheKey').mockReset().mockReturnValue('anime_cache_2024-01-01');
+    
+    // Mark as used to avoid TS warnings
+    void getYesterdayAnimeSpy;
+    void setYesterdayAnimeSpy;
   });
 
   afterEach(() => {

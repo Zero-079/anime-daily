@@ -13,20 +13,25 @@ export function getCacheKey(): string {
 }
 
 /**
- * Get cached data if exists
+ * Get cached data if exists AND matches today's date
+ * This ensures we don't use stale cache from previous days
  */
 export function getCache<T>(key: string): T | null {
   try {
     const cached = localStorage.getItem(key);
     if (cached) {
-      const { data, timestamp } = JSON.parse(cached);
-      const now = Date.now();
-      // Cache valid for 24 hours
-      if (now - timestamp < 24 * 60 * 60 * 1000) {
-        console.log("Using cached data from:", new Date(timestamp).toLocaleString());
-        return data as T;
+      const { data, timestamp, date } = JSON.parse(cached);
+      const today = getTodayDateString();
+      
+      // Verify cache is from TODAY (not just within 24 hours)
+      if (date === today) {
+        const now = Date.now();
+        if (now - timestamp < 24 * 60 * 60 * 1000) {
+          console.log("Using cached data from:", new Date(timestamp).toLocaleString());
+          return data as T;
+        }
       } else {
-        console.log("Cache expired, will refetch");
+        console.log("Cache is from different day (", date, "), will refetch");
       }
     }
   } catch {
@@ -36,13 +41,14 @@ export function getCache<T>(key: string): T | null {
 }
 
 /**
- * Set cache with timestamp
+ * Set cache with timestamp AND date
  */
 export function setCache<T>(key: string, data: T): void {
   try {
     localStorage.setItem(key, JSON.stringify({
       data,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      date: getTodayDateString()
     }));
     console.log("Data cached successfully");
   } catch (e) {
@@ -51,11 +57,30 @@ export function setCache<T>(key: string, data: T): void {
   }
 }
 
+/**
+ * Get yesterday anime - ONLY returns if saved TODAY (meaning it was yesterday's selection)
+ * Returns null if the saved date doesn't match yesterday's date
+ */
 export function getYesterdayAnime(): Anime | null {
   try {
     const stored = localStorage.getItem(YESTERDAY_ANIME_KEY);
     if (stored) {
-      return JSON.parse(stored) as Anime;
+      const parsed = JSON.parse(stored);
+      const savedDate = parsed.date;
+      
+      // Calculate yesterday's date
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
+      
+      // Only return if saved on yesterday's date
+      if (savedDate === yesterdayStr) {
+        return parsed.anime as Anime;
+      }
+      
+      // If dates don't match, clear stale data
+      console.log("Yesterday anime is stale (saved:", savedDate, ", expected:", yesterdayStr, ")");
+      localStorage.removeItem(YESTERDAY_ANIME_KEY);
     }
   } catch {
     // Ignore errors
@@ -63,9 +88,15 @@ export function getYesterdayAnime(): Anime | null {
   return null;
 }
 
+/**
+ * Set yesterday anime with current date
+ */
 export function setYesterdayAnime(anime: Anime): void {
   try {
-    localStorage.setItem(YESTERDAY_ANIME_KEY, JSON.stringify(anime));
+    localStorage.setItem(YESTERDAY_ANIME_KEY, JSON.stringify({
+      anime,
+      date: getTodayDateString()
+    }));
   } catch (e) {
     console.error("Error saving yesterday anime:", e);
   }
